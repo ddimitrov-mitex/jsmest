@@ -1,9 +1,9 @@
 # jsmest
 
-Generates tests using a question bank. Reads from a JSON string and generates both printable version and Moodle XML. A grading schema is also proposed, as well as an Excel formula.
+Generates tests using a question bank. Reads from a JSON string and generates both a printable version and Moodle XML. A grading schema is also proposed, as well as an Excel formula.
 
 Supports the following question types:
-- Multi-choice
+- Multiple choice
 - Short answer (2+2=?)
 - Essay (Write a program...)
 
@@ -11,7 +11,7 @@ Questions are grouped into categories.
 
 Each question object in the JSON can be replaced with an array of questions.
 
-The number of answers of multi-choice questions is limited to 4.
+The number of answers of a multiple choice question is limited to 4.
 
 Multiple variants can be generated from the same question bank.
 
