@@ -2,7 +2,7 @@
 
 Generates tests using a question bank. Reads from a JSON string and generates both a printable version and Moodle XML. A grading schema is also proposed, as well as an Excel formula.
 
-Supports the following question types:
+The following question types are supported:
 - Multiple choice
 - Short answer (2+2=?)
 - Essay (Write a program...)
