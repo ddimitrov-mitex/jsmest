@@ -7,7 +7,11 @@ Supports the following question types:
 - Short answer (2+2=?)
 - Essay (Write a program...)
 
-Questions are grouped into categories. Only one question is taken from each category.
+Questions are grouped into categories.
+
+Each question object in the JSON can be replaced with an array of questions.
+
+The number of answers of multi-choice questions is limited to 4.
 
 Multiple variants can be generated from the same question bank.
 
