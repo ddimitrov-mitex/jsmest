@@ -89,6 +89,12 @@ const moodleQuestionTypes = {
 function generate() {
 	var questions = eval('(' + document.getElementById('paramsInput').value + ')'); // this evil eval allows JS code to be used instead of just JSON
 
+	let radios = document.getElementsByName('numbering');
+	for(let radio of radios) {
+        	if (radio.checked)
+            		numbering = radio.value;
+    	}
+
 	let options = {};
 	if (questions.length && questions[0].type === 'options') {
 		options = questions[0];
@@ -102,7 +108,7 @@ function generate() {
 
 	var currentYear = new Date().getFullYear();
 
-    for (var variant = 1; variant <= variantsCount.value; variant++) {
+	for (var variant = 1; variant <= variantsCount.value; variant++) {
                 // Trifon: add variant category, hardcoded names
 		xml += `\n\n<question type="category">\n<category>\n<text><![CDATA[Тест/Вариант ${variant}]]></text>\n</category>\n</question>\n\n`;
 
@@ -163,7 +169,7 @@ function generate() {
 				});
 				var indices = randperm(answers.length);
 				correctAnswers.push({question: i, answer: indices.indexOf(0), closedQuestion: true});
-				xml += '\n<single>true</single>\n<shuffleanswers>true</shuffleanswers>\n<answernumbering>abc</answernumbering>';
+				xml += `\n<single>true</single>\n<shuffleanswers>true</shuffleanswers>\n<answernumbering>${numbering}</answernumbering>`;
 				for (var j = 0, jj = indices.length; j < jj; j++) {
 					xml += `\n<answer fraction="${j === 0 ? 100 : 0}" format="html"><text><![CDATA[${answers[j]}]]></text></answer>`;
 					var index = indices[j];
@@ -254,7 +260,11 @@ function selectMoodleXml() {
 </td>
 <!--<div style="display:inline-block;">-->
 <td align="left">
-	Variants: <input id="variantsCount" type="number" value="1" style="width: 60px"/>
+	Variants: <input id="variantsCount" type="number" value="1" style="width: 60px"/><br>
+        <input type="radio" name="numbering" value="abc" checked>
+        <label for="abc">abc</label>
+        <input type="radio" name="numbering" value="none">
+        <label for="none">none</label>
 	<button onclick="generate()">Generate!</button>
 </td>
 <!--	<br/>
