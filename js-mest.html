@@ -89,6 +89,12 @@ const moodleQuestionTypes = {
 function generate() {
 	var questions = eval('(' + document.getElementById('paramsInput').value + ')'); // this evil eval allows JS code to be used instead of just JSON
 
+	let radios = document.getElementsByName('numbering');
+	for(let radio of radios) {
+        	if (radio.checked)
+            		numbering = radio.value;
+    	}
+
 	let options = {};
 	if (questions.length && questions[0].type === 'options') {
 		options = questions[0];
@@ -103,6 +109,9 @@ function generate() {
 	var currentYear = new Date().getFullYear();
 
 	for (var variant = 1; variant <= variantsCount.value; variant++) {
+                // Trifon: add variant category, hardcoded names
+		xml += `\n\n<question type="category">\n<category>\n<text><![CDATA[Тест/Вариант ${variant}]]></text>\n</category>\n</question>\n\n`;
+
 		var correctAnswers = [];
 		var correctAnswersLongQuestions = [];
 		var statistics = {closed: 0, shortOpen: 0, longOpen: 0, maxPoints: 0, minPositiveGrade: 0, countByCategory: {}};
@@ -139,17 +148,17 @@ function generate() {
 				}
 			}
 			question.used = true;
-			
+
 			if (question.generator) {
 				var result = question.generator();
 				for (var key in result) question[key] = result[key];
 			}
-			
+
 			html += '<p>' + (i + 1) + '. ' + question.title;
 			if (question.type === 'short-open') html += '<br>Напишете резултата в таблицата с отговорите.';
 			xml += `\n\n<question type="${moodleQuestionTypes[question.type]}">\n<name><text>в${variant}_${pad(i + 1)}</text></name>`;
 			xml += `\n<questiontext format="html"><text><![CDATA[${question.title}]]></text></questiontext>`;
-			
+
 			if (question.type === 'closed') {
 				if (!question.points) question.points = 1;
 				var answers = [];
@@ -160,7 +169,7 @@ function generate() {
 				});
 				var indices = randperm(answers.length);
 				correctAnswers.push({question: i, answer: indices.indexOf(0), closedQuestion: true});
-				xml += '\n<single>true</single>\n<shuffleanswers>true</shuffleanswers>\n<answernumbering>abc</answernumbering>';
+				xml += `\n<single>true</single>\n<shuffleanswers>true</shuffleanswers>\n<answernumbering>${numbering}</answernumbering>`;
 				for (var j = 0, jj = indices.length; j < jj; j++) {
 					xml += `\n<answer fraction="${j === 0 ? 100 : 0}" format="html"><text><![CDATA[${answers[j]}]]></text></answer>`;
 					var index = indices[j];
@@ -218,7 +227,7 @@ function generate() {
 		}
 		answersHtml += '</b></p></td></tr></table>';
 		answersHtml += '<hr>';
-		
+
 		document.getElementById('excelFormula').innerHTML = `=IF(ISBLANK(cell),"",IF(cell&lt;${pointsForGrades[0]},2,IF(cell&lt;${pointsForGrades[1]},3,IF(cell&lt;${pointsForGrades[2]},4,IF(cell&lt;${pointsForGrades[3]},5,6)))))`;
 	}
 
@@ -229,9 +238,9 @@ function generate() {
 	if (html.indexOf('${') >= 0 || xml.indexOf('${') >= 0) alert('Warning! Generated text contains "${...}"');
 
 	document.getElementById('generated').innerHTML = html;
-	
+
 	document.getElementById('moodle').innerHTML = escapeHtml(xml).replace(/\n/g, '<br>');
-	
+
 	document.getElementById('statistics').innerHTML = JSON.stringify(statistics).replace(/"/g, '');
 }
 
@@ -251,7 +260,11 @@ function selectMoodleXml() {
 </td>
 <!--<div style="display:inline-block;">-->
 <td align="left">
-	Variants: <input id="variantsCount" type="number" value="1" style="width: 60px"/>
+	Variants: <input id="variantsCount" type="number" value="1" style="width: 60px"/><br>
+        <input type="radio" name="numbering" value="abc" checked>
+        <label for="abc">abc</label>
+        <input type="radio" name="numbering" value="none">
+        <label for="none">none</label>
 	<button onclick="generate()">Generate!</button>
 </td>
 <!--	<br/>
@@ -276,4 +289,3 @@ function selectMoodleXml() {
 </tr></table>
 </body>
 </html>
-
