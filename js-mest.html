@@ -179,7 +179,7 @@ function generate() {
 			} else if (question.type === 'short-open') {
 				if (!question.points) question.points = 2;
 				xml += `<answer fraction="100" format="moodle_auto_format"><text>${question.correct}</text></answer>`
-				correctAnswers.push({question: i, answer: question.correct, points: question.points});
+				correctAnswers.push({question: i, answer: '' + question.correct, points: question.points});
 				statistics.shortOpen++;
 			} else {
 				if (!question.points) question.points = 3;
@@ -213,7 +213,7 @@ function generate() {
 		html = html.replace('<span class="answers-empty-box">', emptyBoxes);
 
 		answersHtml += '<table width="100%"><tr><td>';
-		answersHtml += '<b>В' + variant + '</b> Затворени въпроси: ' + statistics.closed + ' бр. по 1 т., кратки отворени: по 2 т., дълги отворени: вж. по-долу.';
+		answersHtml += '<b>В' + variant + '</b> Затворени въпроси: ' + statistics.closed + ' бр. по 1 т., кратки отворени: по 2 т., дълги отворени: вж. по-долу.'; // FIXME each question can have different points
 		for (var i = 0, ii = correctAnswersLongQuestions.length; i < ii; i++) {
 			answersHtml += '<p>' + (correctAnswersLongQuestions[i].question + 1) + ': (' + correctAnswersLongQuestions[i].points + ' т.) ' + correctAnswersLongQuestions[i].correct + '</p>';
 		}
